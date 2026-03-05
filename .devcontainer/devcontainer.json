@@ -1,0 +1,22 @@
+{
+  "name": "IoT Python DevContainer",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": "..",
+  },
+  "mounts": [
+  "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
+  ],
+  //Configuring permissions on .ssh copied folder
+  "postStartCommand": "mkdir -p ~/.ssh && cp -r /tmp/host-ssh/* ~/.ssh/ && chmod 700 ~/.ssh && chown -R root:root /root/.ssh && chmod 600 ~/.ssh/* || true",
+  "workspaceFolder": "/home/app",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  }
+}
