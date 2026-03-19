@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lunaris
+    restart: always
+    stdin_open: true
+    tty: true
+    command: python main.py
