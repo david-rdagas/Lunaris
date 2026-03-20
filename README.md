@@ -1,4 +1,14 @@
-# **Lunaris: Simulador de Control en Cohetería**
+<h1><p align="center">Lunaris</p></h1>
+
+<p align="center">
+  <img width="256px" alt="lunaris_logo.svg" src="docs/lunaris_logo.svg" />
+</p>
+
+<p align="center">
+  Sistema IoT de control de constantes principales para cohetería
+</p>
+
+---
 
 Proyecto con fines teóricos en el que se implementa la cadena completa del ciclo de datos en un sistema IoT simulando una misión de cohetería. Lunaris es el nombre que recibe un cohete amateur cuya misión es alcanzar los 1.000 metros de altura y descender con éxito para su reutilización en posteriores misiones, la finalidad de la expedición es la obtención de datos que los sensores abajo detallados recogerán y serán de utilidad para simulaciones, ajustes y mejoras en futuros proyectos de la compañía. 
 
@@ -17,7 +27,8 @@ Tratamos de implementar una aproximación de lo que sería cada una de las fases
   <em>Ciclo de datos IoT: sensores → protocolos → ingesta/almacenamiento → API/dashboards</em>
 </p>
 
-1. **Things**:
+1. **Sensores y "things"**: en la primera fase, los sensores capturan datos de la realidad. Una cosa es cualquier elemento del mundo real que emita datos que podamos capturar, en nuestro caso, trabajaremos con el cohete y los datos que genera al llevar a cabo la misión.
+
 2. **Comunicaciones**:
 3. **Ingesta y almacenamiento**:
 4. **Visualización y servicios**: 
@@ -28,14 +39,14 @@ Tratamos de implementar una aproximación de lo que sería cada una de las fases
 ```
 lunaris/
 ├── docs/
-│   └── sensors/
-│       ├── barometer.py
-│       ├── README.md
-│       ├── sensor2.py
-│       └── sensor3.py
-│   └── utils/
-│       ├── noise.py
-│       └── README.md
+│── sensors/               # Simuladores de datos
+│     ├── barometer.py
+│     ├── README.md
+│     ├── sensor2.py
+│     └── sensor3.py
+│── utils/
+│     ├── noise.py
+│     └── README.md
 ├── .env
 ├── docker-compose.yml
 ├── Dockerfile
