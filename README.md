@@ -1,7 +1,7 @@
 <h1><p align="center">Lunaris</p></h1>
 
 <p align="center">
-  <img width="256px" alt="docs/lunaris_logo.png" src="docs/lunaris_logo.png" />
+  <img src="docs/lunaris_logo.png" width="250" align="center"/>
 </p>
 
 <p align="center">
