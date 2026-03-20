@@ -7,6 +7,6 @@ services:
     restart: always
     stdin_open: true
     tty: true
-    command: python main.py
+    command: python sensors/barometer.py
     environment:
       - PYTHONPATH=/app
