@@ -11,7 +11,7 @@ Autores: David Rodríguez Dagas
 
 from sensors.s_barometer import baro_start_measure
 from sensors.s_imu import imu_start_measure
-
+from sensors.s_termometer import temp_start_measure
 
 def simulation() -> None:
 
@@ -22,7 +22,7 @@ def simulation() -> None:
 
     baro_start_measure(DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
     # imu_start_measure(DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
-
+    temp_start_measure(DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
 
 
 
