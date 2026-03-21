@@ -9,6 +9,8 @@ Autores: David Rodríguez Dagas
 ========================================
 """
 
+from time import sleep
+from numpy import linspace
 from utils.noise import add_gaussian_noise
 
 
@@ -29,21 +31,27 @@ def baro_start_measure(duration: int, rest_end: int, launch_end: int, apogee_end
         - Apogeo: 1s
         - Descenso 79s
     """
+    pressure_on_launch = linspace(PRESSURE_AT_500, PRESSURE_AT_1500, launch_end - rest_end) # Duración del "launch"
+    pressure_on_descent = linspace(PRESSURE_AT_1500, PRESSURE_AT_500, descent_end - apogee_end) # Duración del descenso
     
     for i in range(0, duration + 1):
+        baro_measurement = -1 # Valor de error
+
         if i <= rest_end:
             baro_measurement = add_gaussian_noise(MEAN, STANDARD_D, PRESSURE_AT_500)
-            print(baro_measurement)
-        elif rest_end < i <= rest_end:
-            pass
         elif rest_end < i <= launch_end:
-            pass
+            launch_second = i - rest_end - 1
+            baro_measurement = pressure_on_launch[launch_second]
         elif launch_end < i <= apogee_end:
             pass
         elif apogee_end < i <= descent_end:
             pass
         else:
             print("Simulation fatal error")
+
+        baro_measurement = round(baro_measurement, 4)
+        print(f"EL barómetro ha medido: {baro_measurement}hPa en el instante {i}")
+        sleep(1)
 
 
 
