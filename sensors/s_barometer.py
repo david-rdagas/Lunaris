@@ -15,12 +15,16 @@ from utils.noise import add_gaussian_noise
 
 
 # Valores realistas de presión
+"""
+HACER TRANSFORMADOR DE ALTURA A PRESIÓN PARA QUE SEA MÁS FÁCIL MODIFICARLO
+"""
 PRESSURE_AT_500 = 954.61 #hPa
 PRESSURE_AT_1500 = 845.56
 
 # Valores estadísticos del error normal del sensor
 MEAN = 0
 STANDARD_D = 0.4
+
 
 def baro_start_measure(duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
     """
@@ -41,16 +45,18 @@ def baro_start_measure(duration: int, rest_end: int, launch_end: int, apogee_end
             baro_measurement = add_gaussian_noise(MEAN, STANDARD_D, PRESSURE_AT_500)
         elif rest_end < i <= launch_end:
             launch_second = i - rest_end - 1
-            baro_measurement = pressure_on_launch[launch_second]
+            baro_measurement = add_gaussian_noise(MEAN, STANDARD_D, pressure_on_launch[launch_second])
         elif launch_end < i <= apogee_end:
-            pass
+            baro_measurement = add_gaussian_noise(MEAN, STANDARD_D, PRESSURE_AT_1500)
         elif apogee_end < i <= descent_end:
-            pass
+            descent_second = i - apogee_end - 1
+            baro_measurement = add_gaussian_noise(MEAN, STANDARD_D, pressure_on_descent[descent_second])
+
         else:
             print("Simulation fatal error")
 
         baro_measurement = round(baro_measurement, 4)
-        print(f"EL barómetro ha medido: {baro_measurement}hPa en el instante {i}")
+        print(f"El barómetro ha medido: {baro_measurement}hPa en el instante {i}")
         sleep(1)
 
 
