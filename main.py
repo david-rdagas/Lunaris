@@ -26,8 +26,13 @@ def simulation() -> None:
 
 
 
+def tests():
+    from utils.temp_utils import apply_cooling_law
 
+    for i in range(10, 105):
+        print(apply_cooling_law(temperature=20, ext_temperature=800, k=0.036, t=i))
 
 
 if __name__ == "__main__":
-    simulation()
+    #simulation()
+    tests()

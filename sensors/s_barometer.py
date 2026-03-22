@@ -57,7 +57,7 @@ def baro_start_measure(duration: int, rest_end: int, launch_end: int, apogee_end
 
         baro_measurement = round(baro_measurement, 4)
         print(f"El barómetro ha medido: {baro_measurement}hPa en el instante {i}")
-        sleep(1)
+        #sleep(1)
 
 
 
