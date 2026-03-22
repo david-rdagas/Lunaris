@@ -27,10 +27,11 @@ def simulation() -> None:
 
 
 def tests():
-    from utils.temp_utils import apply_cooling_law
-
-    for i in range(10, 105):
-        print(apply_cooling_law(temperature=20, ext_temperature=800, k=0.036, t=i))
+    DURATION = DESCENT_END = 105
+    REST_END = 5
+    LAUNCH_END = 25
+    APOGEE_END = 26
+    baro_start_measure(DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
 
 
 if __name__ == "__main__":
