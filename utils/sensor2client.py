@@ -13,7 +13,7 @@ def prepare_publisher(id: str, status_topic: str):
         retain=True
     )
     
-    client.max_inflight_messages_set(110)
+    client.max_inflight_messages_set(20)
 
     #Conectar al broker y marcar como online
     client.connect("localhost", 1883, 60)

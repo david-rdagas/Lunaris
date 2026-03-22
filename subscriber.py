@@ -7,6 +7,8 @@ def on_connect(client, userdata, flags, rc):
 
     client.subscribe("rocket/+/+/data", qos=1)
 
+    client.subscribe ("rocket/+/+/status", qos=1)
+
 # ── 2. Callback: mensaje recibido ──────────────────────────────────────────
 
 
@@ -32,7 +34,6 @@ def on_disconnect(client, userdata, rc):
 
 # ── 4. Creación de cliente ──────────────────────────────────────────
 client = mqtt.Client(client_id="subscriber-01")
-
 client.on_connect = on_connect
 client.on_message = on_message
 client.on_disconnect = on_disconnect

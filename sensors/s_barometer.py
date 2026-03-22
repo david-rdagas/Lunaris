@@ -70,10 +70,11 @@ def baro_start_measure(duration: int, rest_end: int, launch_end: int, apogee_end
             print("Simulation fatal error")
 
         baro_measurement = round(baro_measurement, 4)
-        print(baro_measurement)
+        
         
         payload = json.dumps({
             "device_id": "s-barometer-01",
+            "measure_id": str(i),
             "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
             "type": "pressure",
             "unit": "hPa",
@@ -86,7 +87,8 @@ def baro_start_measure(duration: int, rest_end: int, launch_end: int, apogee_end
             qos=1
         )
 
-        sleep(1)
+        print(baro_measurement)
+        sleep(0.5)
 
 
 
