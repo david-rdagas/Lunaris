@@ -15,7 +15,7 @@ from math import exp
 # ===================
 # FUNCIONES DE ESTADO
 # ===================
-def check_phase(i: int) -> str:
+def check_phase(i: int) -> int:
     """Comprueba el segundo de operación para determinar la fase
     Codificación: 
         - Reposo: 0

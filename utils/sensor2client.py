@@ -9,19 +9,17 @@ def prepare_publisher(id: str, status_topic: str):
     client.will_set(
         status_topic,
         "OFFLINE",
-        qos=1,
+        qos=0,
         retain=True
     )
     
-    client.max_inflight_messages_set(20)
-
     #Conectar al broker y marcar como online
     client.connect("localhost", 1883, 60)
 
     client.publish(
         status_topic,
         "ONLINE",
-        qos=1,
+        qos=0,
         retain=True
     )
 
