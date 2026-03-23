@@ -72,8 +72,8 @@ def temp_start_measure(client, i: int, duration: int, rest_end: int, launch_end:
         "device_id": "s-termometer-01",
         "measure_id": str(i),
         "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
-        "type": "pressure",
-        "unit": "hPa",
+        "type": "temperature",
+        "unit": "ºC",
         "value": termo_measurement
     })
 

@@ -38,10 +38,6 @@ def baro_start_measure(client, i:int , duration: int, rest_end: int, launch_end:
         - Apogeo: 1s
         - Descenso 79s
     """
-    # ── 1. Preparar el cliente  ──────────────────────────────────────────
-
-    client = prepare_publisher("s-barometer-01", "rocket/system/s-barometer-01/status")
-
     # ── 2. Simulación de presión y publicación de datos  ──────────────────────────────────────────
 
     pressure_on_launch = linspace(PRESSURE_AT_500, PRESSURE_AT_1500, launch_end - rest_end) # Duración del "launch"
@@ -82,7 +78,7 @@ def baro_start_measure(client, i:int , duration: int, rest_end: int, launch_end:
     })
 
     client.publish(
-        "rocket/propulsion/s-barometer-01/data",
+        "rocket/general/s-barometer-01/data",
         payload,
         qos=0 #Provisional
     )

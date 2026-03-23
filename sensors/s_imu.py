@@ -12,7 +12,8 @@ Autores: David Rodríguez Dagas
 import numpy as np
 from math import exp
 from utils.noise import add_gaussian_noise
-
+import json
+from datetime import datetime, timezone, timedelta
 
 # ── 1. Parámetros de misión globales ─────────────
 _duration    = None
@@ -31,8 +32,10 @@ GYRO_NOISE_REST      = 0.5
 
 
 # ── 3. Punto de entrada principal ───────────────────────────────────────────
-def imu_start_measure(client_imu: any, i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int) -> None:
+def imu_start_measure(client: any, i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int) -> None:
     """Punto de entrada al sensor. Inicializa parámetros de misión y lanza cada componente."""
+    
+
     global _duration, _rest_end, _launch_end, _apogee_end, _descent_end
     _duration    = duration
     _rest_end    = rest_end
@@ -40,18 +43,36 @@ def imu_start_measure(client_imu: any, i: int, duration: int, rest_end: int, lau
     _apogee_end  = apogee_end
     _descent_end = descent_end
 
-    accelerometer_start_measure(client_imu, i)
-    gyroscope_start_measure(client_imu, i)
+    acc = accelerometer_start_measure(i)
+    gyro = gyroscope_start_measure(i)
+
+    payload = json.dumps({
+        "device_id": "s-imu-01",
+        "measure_id": str(i),
+        "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
+        "type": "direction",
+        "unit": "",
+        "acceleration_data": acc,
+        "gyroscope_data": gyro
+    })
+
+    client.publish(
+        "rocket/orientation/s-imu-01/data",
+        payload,
+        qos=0 #Provisional
+    )
 
 
 
 # ── 4. Acelerómetro ───────────────────────────────────────────────────────────
-def accelerometer_start_measure(client_imu: any, i: int) -> None:
+def accelerometer_start_measure(i: int):
     accel_packet = []
     accel_packet.append(measure_x_axis_a(i))
     accel_packet.append(measure_y_axis_a(i))
     accel_packet.append(measure_z_axis_a(i))
     print(accel_packet)
+    
+    return accel_packet
 
 
 def measure_x_axis_a(t: int) -> float:
@@ -83,12 +104,13 @@ def measure_z_axis_a(t: int) -> float:
 
 
 # ── 5. Giroscopio ─────────────────────────────────────────────────────────────
-def gyroscope_start_measure(client_imu: any, i: int) -> None:
+def gyroscope_start_measure( i: int):
     gyro_packet = []
     gyro_packet.append(measure_x_axis_g(i))
     gyro_packet.append(measure_y_axis_g(i))
     gyro_packet.append(measure_z_axis_g(i))
-    print(gyro_packet)
+    
+    return gyro_packet
 
 
 def measure_x_axis_g(t: int) -> float:

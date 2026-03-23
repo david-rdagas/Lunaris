@@ -29,9 +29,8 @@ def simulation() -> None:
 
     for i in range (0, DURATION + 1):
         #baro_start_measure(client_baro, i, DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
-        temp_start_measure(client_temp, i, DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
-        
-        # imu_start_measure(client_imu, i, DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
+        #temp_start_measure(client_temp, i, DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
+        imu_start_measure(client_imu, i, DURATION, REST_END, LAUNCH_END, APOGEE_END, DESCENT_END)
         sleep(1)
         
 def test():
@@ -51,5 +50,5 @@ def test():
 
 
 if __name__ == "__main__":
-    #simulation()
-    test()
+    simulation()
+    #test()
