@@ -9,12 +9,13 @@ Autores: David Rodríguez Dagas
 ========================================
 """
 
-from numpy import linspace
+from numpy import linspace, random
 from time import sleep
 from utils.temp_utils import *
 from utils.sensor2client import prepare_publisher
 import json
 from datetime import datetime, timezone, timedelta
+
 
 TEMPERATURE_AT_REST = 20 #Celsius
 MAX_TEMPERATURE = 800
@@ -28,7 +29,7 @@ STD_D_DESCENT = 3
 
 
 
-def temp_start_measure(client, i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
+def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
     termo_measurement = -1 # Valor de error
     ignition_end = 10
     termo = []
@@ -65,20 +66,26 @@ def temp_start_measure(client, i: int, duration: int, rest_end: int, launch_end:
     else:
         print("Simulation fatal error")
 
+    # Caso de error 
+    if random.randint(0,100) > 99:
+        pass #esperar
+    
+
     print(termo_measurement)
     termo.append(termo_measurement)
     
-    payload = json.dumps({
-        "device_id": "s-termometer-01",
-        "measure_id": str(i),
-        "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
-        "type": "temperature",
-        "unit": "ºC",
-        "value": termo_measurement
-    })
+    if i % frequency == 0:
+        payload = json.dumps({
+            "device_id": "s-termometer-01",
+            "measure_id": str(i),
+            "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
+            "type": "temperature",
+            "unit": "ºC",
+            "value": termo_measurement
+        })
 
-    client.publish(
-        "rocket/propulsion/s-termometer-01/data",
-        payload,
-        qos=0 #Provisional
-    )
+        client.publish(
+            "rocket/propulsion/s-termometer-01/data",
+            payload,
+            qos=0 #Provisional
+        )

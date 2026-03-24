@@ -16,11 +16,11 @@ import json
 from datetime import datetime, timezone, timedelta
 
 # ── 1. Parámetros de misión globales ─────────────
-_duration    = None
-_rest_end    = None
-_launch_end  = None
-_apogee_end  = None
-_descent_end = None
+_duration    = -1
+_rest_end    = -1
+_launch_end  = -1
+_apogee_end  = -1
+_descent_end = -1
 
 
 # ── 2. Constantes de ruido (ejes estables x e y) ────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ GYRO_NOISE_REST      = 0.5
 
 
 # ── 3. Punto de entrada principal ───────────────────────────────────────────
-def imu_start_measure(client: any, i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int) -> None:
+def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int) -> None:
     """Punto de entrada al sensor. Inicializa parámetros de misión y lanza cada componente."""
     
 
@@ -46,21 +46,22 @@ def imu_start_measure(client: any, i: int, duration: int, rest_end: int, launch_
     acc = accelerometer_start_measure(i)
     gyro = gyroscope_start_measure(i)
 
-    payload = json.dumps({
-        "device_id": "s-imu-01",
-        "measure_id": str(i),
-        "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
-        "type": "direction",
-        "unit": "",
-        "acceleration_data": acc,
-        "gyroscope_data": gyro
-    })
+    if i % frequency == 0:
+        payload = json.dumps({
+            "device_id": "s-imu-01",
+            "measure_id": str(i),
+            "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
+            "type": "direction",
+            "unit": "m/s**2 & rad/s",
+            "acceleration_data": acc,
+            "gyroscope_data": gyro
+        })
 
-    client.publish(
-        "rocket/orientation/s-imu-01/data",
-        payload,
-        qos=0 #Provisional
-    )
+        client.publish(
+            "rocket/orientation/s-imu-01/data",
+            payload,
+            qos=0 #Provisional
+        )
 
 
 

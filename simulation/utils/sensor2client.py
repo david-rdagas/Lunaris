@@ -13,6 +13,7 @@ def prepare_publisher(id: str, status_topic: str):
         retain=True
     )
     
+    
     #Conectar al broker y marcar como online
     client.connect("localhost", 1883, 60)
 

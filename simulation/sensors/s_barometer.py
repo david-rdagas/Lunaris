@@ -29,7 +29,7 @@ PRESSURE_AT_1500 = 845.56
 MEAN = 0
 STANDARD_D = 0.4
 
-def baro_start_measure(client, i:int , duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
+def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
     """
     Función que recrea las medidas de presión que un barómetro real recogería durante un vuelo real, las fases que atraviesa son:
     
@@ -67,21 +67,21 @@ def baro_start_measure(client, i:int , duration: int, rest_end: int, launch_end:
 
     baro_measurement = round(baro_measurement, 4)
     
-    
-    payload = json.dumps({
-        "device_id": "s-barometer-01",
-        "measure_id": str(i),
-        "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
-        "type": "pressure",
-        "unit": "hPa",
-        "value": baro_measurement
-    })
+    if i % frequency == 0:    
+        payload = json.dumps({
+            "device_id": "s-barometer-01",
+            "measure_id": str(i),
+            "timestamp": datetime.now(timezone(timedelta(hours=1))).isoformat(),
+            "type": "pressure",
+            "unit": "hPa",
+            "value": baro_measurement
+        })
 
-    client.publish(
-        "rocket/general/s-barometer-01/data",
-        payload,
-        qos=0 #Provisional
-    )
+        client.publish(
+            "rocket/general/s-barometer-01/data",
+            payload,
+            qos=0 #Provisional
+        )
 
 
 
