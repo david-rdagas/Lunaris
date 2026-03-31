@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import json
+from utils.sliding_window import window_update, window_alarm
 
 # ── 1. Callback: conexión ──────────────────────────────────────────
 def on_connect(client, userdata, flags, rc):
@@ -8,25 +9,39 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("rocket/+/+/data", qos=1)
 
     client.subscribe ("rocket/+/+/status", qos=1)
+    
 
 # ── 2. Callback: mensaje recibido ──────────────────────────────────────────
-
-
+sliding_window_termometer = []
+sliding_window_barometer = []
 def on_message(client, userdata, msg):
     payload = msg.payload.decode()
+
 
     print("\nTopic:", msg.topic)
     
     if msg.topic.endswith("/data"):
         try:
+            #1. Crear ventana deslizante y ajustarla a la temperatura 
             data = json.loads(payload)
             print("Data:", data)
             
         except json.JSONDecodeError:
             print("JSON Error:", payload)
 
+        if msg.topic.endswith("/s-termometer-01/data"):
+            window_update(data['value'], sliding_window_termometer, 5)
+            window_alarm(sliding_window_termometer, alarm_threshold=810.0, data='temperatura')
+            
+        if msg.topic.endswith("/s-barometer-01/data"):
+            window_update(data['value'], sliding_window_barometer, 10)
+            window_alarm(sliding_window_barometer, alarm_threshold=800.0, data='presion')
+            
+
     else:
         print("Status message:", payload)
+    
+        
 
 # ── 3. Callback: desconexión ──────────────────────────────────────────
 def on_disconnect(client, userdata, rc):
