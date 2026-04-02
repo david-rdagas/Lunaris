@@ -22,8 +22,6 @@ def check_phase(i: int) -> int:
         - Ignición: 1
         - Ascenso: 2
         - Estable (descenso): 3
-
-    
     """
     phase = -1 #Valor de error
     if i < 5:

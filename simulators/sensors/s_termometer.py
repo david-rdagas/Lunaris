@@ -10,17 +10,13 @@ Autores: David Rodríguez Dagas
 """
 
 from numpy import linspace, random
-from time import sleep
 from utils.temp_utils import *
-from utils.sensor2client import prepare_publisher
 import json
 from datetime import datetime, timezone, timedelta
 
-
+# Variables ajustables al vuelo
 TEMPERATURE_AT_REST = 20 #Celsius
 MAX_TEMPERATURE = 800
-
-# Valores estadísticos del error normal del sensor
 MEAN = 0
 STANDARD_D = 0.8
 STD_D_IGNITION = 15
@@ -28,15 +24,17 @@ STD_D_LAUNCH = 5
 STD_D_DESCENT = 3
 
 
-
 def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
+    """
+    Función que simula la temperatura de la carcasa del motor en cada fase del vuelo de forma realista.
+    """
     termo_measurement = -1 # Valor de error
     ignition_end = 10
-    termo = []
 
     # Comprobación del estado
     phase = check_phase(i)
 
+    # ── 1. Generación de temperatura ─────────────────────────────────────────────────────────────
     if i <= rest_end:
         temperature = TEMPERATURE_AT_REST
         termo_measurement = add_gaussian_noise(MEAN, STANDARD_D, temperature)
@@ -66,13 +64,11 @@ def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: 
     else:
         print("Simulation fatal error")
 
-    # Caso de error 
-    if random.randint(0,100) > 99:
-        pass #esperar
-    
 
-    print(termo_measurement)
-    termo.append(termo_measurement)
+    # ── 2. Envío MQTT ─────────────────────────────────────────────────────────────
+    # Caso de error (no se envía el paquete)
+    if random.randint(0,100) > 99:
+        return
     
     if i % frequency == 0:
         payload = json.dumps({
@@ -85,7 +81,7 @@ def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: 
         })
 
         client.publish(
-            "rocket/propulsion/s-termometer-01/data",
+            "rocket/control/s-termometer-01/data",
             payload,
-            qos=0 #Provisional
+            qos=1 #Provisional
         )

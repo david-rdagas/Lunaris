@@ -54,3 +54,51 @@ lunaris/
 ├── README.md
 └── requirements.txt
 ```
+
+
+# -----------------------------------------------------
+  influxdb:
+    image: influxdb:2.7
+    ports:
+    - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=pic2026pass
+      - DOCKER_INFLUXDB_INIT_ORG=esei
+      - DOCKER_INFLUXDB_INIT_BUCKET=iot_data
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mi-token-secreto
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    networks:
+      - lunaris-internal-network
+# -----------------------------------------------------
+  ingestion:
+    build: ./ingestion
+    depends_on:
+      - mosquitto
+      - influxdb
+    environment:
+      - MQTT_BROKER=mosquitto
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=mi-token-secreto
+      - INFLUX_ORG=esei
+      - INFLUX_BUCKET=iot_data
+    restart: on-failure
+    networks:
+      - lunaris-internal-network
+# -----------------------------------------------------
+  api:
+    build: ./api
+    depends_on:
+      - influxdb
+    ports:
+      - "5000:5000"
+    environment:
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=mi-token-secreto
+      - INFLUX_ORG=esei
+      - INFLUX_BUCKET=iot_data
+    networks:
+      - lunaris-internal-network
+  

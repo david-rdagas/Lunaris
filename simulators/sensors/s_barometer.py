@@ -11,23 +11,20 @@ Autores: David Rodríguez Dagas
 
 from numpy import linspace
 from utils.noise import add_gaussian_noise
-from utils.sensor2client import prepare_publisher
+import random
 import json
-from time import sleep
 from datetime import datetime, timezone, timedelta
 
 
 
 # Valores realistas de presión
-"""
-HACER TRANSFORMADOR DE ALTURA A PRESIÓN PARA QUE SEA MÁS FÁCIL MODIFICARLO
-"""
 PRESSURE_AT_500 = 954.61 #hPa
 PRESSURE_AT_1500 = 845.56
 
 # Valores estadísticos del error normal del sensor
 MEAN = 0
 STANDARD_D = 0.4
+
 
 def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int):
     """
@@ -38,7 +35,7 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
         - Apogeo: 1s
         - Descenso 79s
     """
-    # ── 2. Simulación de presión y publicación de datos  ──────────────────────────────────────────
+    # ── 1. Simulación de presión  ──────────────────────────────────────────
 
     pressure_on_launch = linspace(PRESSURE_AT_500, PRESSURE_AT_1500, launch_end - rest_end) # Duración del "launch"
     pressure_on_descent = linspace(PRESSURE_AT_1500, PRESSURE_AT_500, descent_end - apogee_end) # Duración del descenso
@@ -67,6 +64,11 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
 
     baro_measurement = round(baro_measurement, 4)
     
+    # ── 2. Envío MQTT ─────────────────────────────────────────────────────────────
+    # Caso de error (no se envía el paquete)
+    if random.randint(0,100) > 99:
+        return
+    
     if i % frequency == 0:    
         payload = json.dumps({
             "device_id": "s-barometer-01",
@@ -78,14 +80,7 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
         })
 
         client.publish(
-            "rocket/general/s-barometer-01/data",
+            "rocket/control/s-barometer-01/data",
             payload,
-            qos=0 #Provisional
+            qos=1 #Provisional
         )
-
-
-
-
-# Conversión altitud → presión (dejarla estar de momento aunque no se use para procesado)
-def pressure_to_altitude(pressure: float, p0: float = 1013.25) -> float:
-    return (288.15 / 0.0065) * (1 - (pressure / p0) ** 0.190263)

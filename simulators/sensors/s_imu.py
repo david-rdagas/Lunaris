@@ -9,10 +9,10 @@ Autores: David Rodríguez Dagas
 ========================================
 """
 
-import numpy as np
 from math import exp
 from utils.noise import add_gaussian_noise
 import json
+import random
 from datetime import datetime, timezone, timedelta
 
 # ── 1. Parámetros de misión globales ─────────────
@@ -30,7 +30,6 @@ GYRO_NOISE_COMBUSTION  = 3.0
 GYRO_NOISE_REST      = 0.5
 
 
-
 # ── 3. Punto de entrada principal ───────────────────────────────────────────
 def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int) -> None:
     """Punto de entrada al sensor. Inicializa parámetros de misión y lanza cada componente."""
@@ -46,6 +45,10 @@ def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: 
     acc = accelerometer_start_measure(i)
     gyro = gyroscope_start_measure(i)
 
+    # ── 6. Envío MQTT ───────────────────────────────────────────────────────────
+    if random.randint(0,100) > 99:
+        return
+
     if i % frequency == 0:
         payload = json.dumps({
             "device_id": "s-imu-01",
@@ -60,13 +63,16 @@ def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: 
         client.publish(
             "rocket/orientation/s-imu-01/data",
             payload,
-            qos=0 #Provisional
+            qos=1 #Provisional
         )
 
 
 
 # ── 4. Acelerómetro ───────────────────────────────────────────────────────────
 def accelerometer_start_measure(i: int):
+    """
+    Crea la medición del acelerómetro en un instante de tiempo (medida en los 3 ejes)
+    """
     accel_packet = []
     accel_packet.append(measure_x_axis_a(i))
     accel_packet.append(measure_y_axis_a(i))
@@ -106,6 +112,9 @@ def measure_z_axis_a(t: int) -> float:
 
 # ── 5. Giroscopio ─────────────────────────────────────────────────────────────
 def gyroscope_start_measure( i: int):
+    """
+    Crea la medición del giroscopio en un instante de tiempo (medida en los 3 ejes)
+    """
     gyro_packet = []
     gyro_packet.append(measure_x_axis_g(i))
     gyro_packet.append(measure_y_axis_g(i))
