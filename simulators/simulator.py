@@ -20,6 +20,7 @@ def simulation() -> None:
     Función principal del módulo de simulación, inicia los 3 tópicos a los que los datos serán enviados y ejecuta
     el bucle de simulación
     """
+    print("Iniciando la simulación de la misión...")
 
     # Variables ajustables al vuelo
     DURATION = DESCENT_END = 105

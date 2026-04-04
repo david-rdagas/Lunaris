@@ -49,6 +49,7 @@ def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: 
     if random.randint(0,100) > 99:
         return
 
+    print(f"[IMU] Enviado paquete con valor: {acc} m/s**2 & {gyro} rad/s")
     if i % frequency == 0:
         payload = json.dumps({
             "device_id": "s-imu-01",
@@ -63,7 +64,7 @@ def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: 
         client.publish(
             "rocket/orientation/s-imu-01/data",
             payload,
-            qos=1 #Provisional
+            qos=0 #Provisional
         )
 
 
@@ -77,7 +78,6 @@ def accelerometer_start_measure(i: int):
     accel_packet.append(measure_x_axis_a(i))
     accel_packet.append(measure_y_axis_a(i))
     accel_packet.append(measure_z_axis_a(i))
-    print(accel_packet)
     
     return accel_packet
 

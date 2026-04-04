@@ -70,6 +70,7 @@ def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: 
     if random.randint(0,100) > 99:
         return
     
+    print(f"[TERMÓMETRO] Enviado paquete con valor: {termo_measurement} ºC")
     if i % frequency == 0:
         payload = json.dumps({
             "device_id": "s-termometer-01",
@@ -83,5 +84,5 @@ def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: 
         client.publish(
             "rocket/control/s-termometer-01/data",
             payload,
-            qos=1 #Provisional
+            qos=0 #Provisional
         )

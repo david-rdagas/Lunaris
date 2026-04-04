@@ -43,7 +43,6 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
 
     if i <= rest_end:
         baro_measurement = add_gaussian_noise(MEAN, STANDARD_D, PRESSURE_AT_500)
-        print(baro_measurement)
 
     elif rest_end < i <= launch_end:
         launch_second = i - rest_end - 1
@@ -69,6 +68,7 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
     if random.randint(0,100) > 99:
         return
     
+    print(f"[BARÓMETRO] Enviado paquete con valor: {baro_measurement} hPa")
     if i % frequency == 0:    
         payload = json.dumps({
             "device_id": "s-barometer-01",
@@ -82,5 +82,5 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
         client.publish(
             "rocket/control/s-barometer-01/data",
             payload,
-            qos=1 #Provisional
+            qos=0 #Provisional
         )
