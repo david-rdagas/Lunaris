@@ -57,7 +57,7 @@ write_api = influx_client.write_api(write_options=SYNCHRONOUS)
 def on_connect(client, userdata, flags, rc):
     print("Servicio de ingesta conectado como subscriber!")
     client.subscribe("rocket/+/+/data", qos=1)
-    client.subscribe ("rocket/+/+/status", qos=1)
+    client.subscribe("rocket/+/+/status", qos=1)
 
 def on_disconnect(client, userdata, rc):
     print("El servicio de ingesta se ha desconectado del broker", rc)

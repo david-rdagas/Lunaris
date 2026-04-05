@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  # ── Backend FastAPI ──────────────────────────────────────────────────────────
+  api:
+    build: .
+    container_name: iot-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - iot-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/grafana/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ── Grafana ─────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: iot-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin   # cambia en producción
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_INSTALL_PLUGINS: yesoreyeram-infinity-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana_provisioning:/etc/grafana/provisioning
+    networks:
+      - iot-net
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  iot-net:
+    driver: bridge
+
+volumes:
+  grafana-data:

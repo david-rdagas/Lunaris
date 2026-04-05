@@ -70,4 +70,4 @@ volumes:
   influxdb_data:
 networks:
   lunaris-internal-network:
-    name: lunaris-internal-network
+    name: lunaris-internal-network 

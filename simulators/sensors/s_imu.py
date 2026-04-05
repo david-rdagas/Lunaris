@@ -33,7 +33,6 @@ GYRO_NOISE_REST      = 0.5
 # ── 3. Punto de entrada principal ───────────────────────────────────────────
 def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: int, launch_end: int, apogee_end: int, descent_end: int) -> None:
     """Punto de entrada al sensor. Inicializa parámetros de misión y lanza cada componente."""
-    
 
     global _duration, _rest_end, _launch_end, _apogee_end, _descent_end
     _duration    = duration

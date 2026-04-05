@@ -1,0 +1,82 @@
+{
+  "title": "IoT — Tiempo Real",
+  "uid": "iot-realtime",
+  "refresh": "2s",
+  "time": { "from": "now-30m", "to": "now" },
+  "tags": ["iot"],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Temperatura actual — sensor_01",
+      "type": "gauge",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "iot-simplejson" },
+      "targets": [{ "target": "sensor_01", "type": "timeserie" }],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "min": -20, "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue",  "value": null },
+              { "color": "green", "value": 0    },
+              { "color": "orange","value": 60   },
+              { "color": "red",   "value": 80   }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Temperatura — últimos 30 min",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "datasource": { "uid": "iot-simplejson" },
+      "targets": [
+        { "target": "sensor_01", "type": "timeserie" },
+        { "target": "sensor_02", "type": "timeserie" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "celsius", "color": { "mode": "palette-classic" } }
+      },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend":  { "displayMode": "table", "placement": "bottom" }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Alertas activas",
+      "type": "table",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+      "datasource": { "uid": "iot-simplejson" },
+      "targets": [{ "target": "alerts", "type": "table" }],
+      "options": { "sortBy": [{ "displayName": "Timestamp", "desc": true }] },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Tipo" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-background" },
+              { "id": "mappings", "value": [
+                { "type": "value", "options": { "HIGH_TEMP": { "color": "red",    "index": 0 } } },
+                { "type": "value", "options": { "HIGH_HUM":  { "color": "orange", "index": 1 } } },
+                { "type": "value", "options": { "LOW_PRES":  { "color": "blue",   "index": 2 } } }
+              ]}
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

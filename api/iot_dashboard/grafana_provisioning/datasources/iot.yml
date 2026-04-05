@@ -1,0 +1,30 @@
+apiVersion: 1
+
+datasources:
+  # ── Infinity datasource → FastAPI (REST + WebSocket) ─────────────────────
+  - name: IoT-API
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    uid: iot-infinity
+    jsonData:
+      global_queries: []
+      auth_method: "header"
+    secureJsonData:
+      # Header X-API-Key enviado automáticamente en cada request
+      httpHeaderName1: "X-API-Key"
+      httpHeaderValue1: "${API_KEY}"   # Grafana lee esta env var
+    version: 1
+    editable: true
+
+  # ── SimpleJSON datasource (alternativa sin plugin extra) ─────────────────
+  - name: IoT-SimpleJSON
+    type: grafana-simple-json-datasource
+    url: http://api:8000/grafana
+    access: proxy
+    uid: iot-simplejson
+    jsonData:
+      httpHeaderName1: "X-API-Key"
+    secureJsonData:
+      httpHeaderValue1: "${API_KEY}"
+    version: 1
+    editable: true
