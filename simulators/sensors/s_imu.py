@@ -47,7 +47,8 @@ def imu_start_measure(client, frequency: int , i: int, duration: int, rest_end: 
 
     # ── 6. Envío MQTT ───────────────────────────────────────────────────────────
     if random.randint(0,100) > 99:
-        return
+        acc += random.uniform(-acc/100.0, acc/100.0)
+        gyro += random.uniform(-gyro/100.0, gyro/100.0) 
 
     print(f"[IMU] Enviado paquete con valor: {acc} m/s**2 & {gyro} rad/s")
     if i % frequency == 0:

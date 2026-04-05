@@ -66,9 +66,8 @@ def temp_start_measure(client, frequency: int, i: int, duration: int, rest_end: 
 
 
     # ── 2. Envío MQTT ─────────────────────────────────────────────────────────────
-    # Caso de error (no se envía el paquete)
     if random.randint(0,100) > 99:
-        return
+        termo_measurement += random.uniform(-termo_measurement/100.0, termo_measurement/100.0)
     
     print(f"[TERMÓMETRO] Enviado paquete con valor: {termo_measurement} ºC")
     if i % frequency == 0:

@@ -66,7 +66,8 @@ def baro_start_measure(client, frequency: int, i:int , duration: int, rest_end: 
     # ── 2. Envío MQTT ─────────────────────────────────────────────────────────────
     # Caso de error (no se envía el paquete)
     if random.randint(0,100) > 99:
-        return
+        baro_measurement += random.uniform(-baro_measurement/100.0, baro_measurement/100.0)
+
     
     print(f"[BARÓMETRO] Enviado paquete con valor: {baro_measurement} hPa")
     if i % frequency == 0:    
