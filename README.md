@@ -69,3 +69,5 @@ El proyecto se agrupa en un conjunto de contenedores, por tanto no es necesario 
 docker compose up
 ```
 Sobre la raíz del proyecto.
+
+Cabe destacar que el repositorio de github viene sin las claves del .env, necesarias para el funcionamiento íntegro del proyecto. 
