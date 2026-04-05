@@ -71,3 +71,26 @@ docker compose up
 Sobre la raíz del proyecto.
 
 Cabe destacar que el repositorio de github viene sin las claves del .env, necesarias para el funcionamiento íntegro del proyecto. 
+
+## Despliegue con Docker (Bonus B3)
+
+### Requisitos
+
+- Docker y Docker Compose instalados
+
+### Ejecución
+
+docker compose up --build
+(en caso de querer reiniciar todo el proceso ejecutar docker compose down -v --rmi all --remove-orphans)
+### Puertos expuestos
+| Puerto | Servicio |
+|--------|-----------------|
+| 1883 | MQTT Broker |
+| 8086 | InfluxDB |
+| 5000 | API REST |
+### Variables de entorno configurables
+| Variable | Valor por defecto | Descripción |
+|--------------|-------------------|--------------------------|
+| MQTT_BROKER | mosquitto | Hostname del broker MQTT |
+| INFLUX_URL | http://influxdb:8086 | URL de InfluxDB |
+| INFLUX_TOKEN | mi-token-secreto | Token de autenticación |

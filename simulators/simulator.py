@@ -30,7 +30,7 @@ def simulation() -> None:
 
     # ── 1. Crear los 3 publishers ──────────────────────────────────────────
     client_temp = prepare_publisher("s-termometer-01", "rocket/system/s-termometer-01/status")
-    client_baro = prepare_publisher("s-barometer-01", "rocket/system/s-termometer-01/status")
+    client_baro = prepare_publisher("s-barometer-01", "rocket/system/s-barometer-01/status")
     client_imu = prepare_publisher("s-imu-01", "rocket/system/s-imu-01/status")
 
     # ── 2. Simulación ──────────────────────────────────────────

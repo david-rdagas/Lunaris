@@ -10,15 +10,12 @@ def valid_data_message(payload_str: str) -> bool:
         return False
     
     # 2. Campos obligatorios presentes
-    required = ["device_id", "measure_id", "type", "timestamp", "unit", "value"]
+    required = ["device_id", "measure_id", "type", "timestamp", "unit"]
     for field in required:
         if field not in data:
             return False
     
     # 3. value es numérico
-    if not isinstance(data["value"], (int, float)):
-        return False
-
     return True
 
 

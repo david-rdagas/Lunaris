@@ -96,28 +96,24 @@ def on_message(client, userdata, msg):
         data_dict = json.loads(raw_message)
 
         # 4.
-        if data_dict["device_id"] == "s-imu-01":
-            point_acc = (
-                Point('s-imu-01/acc')
-                .tag("type", data_dict["type"])
-                .tag("unit", "m/s**2")
-                .field("acc_x", float(data_dict["acceleration_data"][0]))
-                .field("acc_y", float(data_dict["acceleration_data"][1]))
-                .field("acc_z", float(data_dict["acceleration_data"][2]))
-                .time(datetime.fromisoformat(data_dict["timestamp"]))
-            )
+        if sensor_id == "s-imu-01":
 
-            point_gyro = (
-                Point('s-imu-01/gyro')
-                .tag("type", data_dict["type"])
-                .tag("unit", "rad/s")
-                .field("gyro_x", float(data_dict["gyroscope_data"][0]))
-                .field("gyro_y", float(data_dict["gyroscope_data"][1]))
-                .field("gyro_z", float(data_dict["gyroscope_data"][2]))
-                .time(datetime.fromisoformat(data_dict["timestamp"]))
-            )
-            write_to_influx(point_acc)
-            write_to_influx(point_gyro)
+                acc = data_dict["acceleration_data"]
+                gyro = data_dict["gyroscope_data"]
+
+                point = (
+                    Point(data_dict['device_id'])
+                    .tag("type", data_dict["type"])
+                    .tag("unit", data_dict["unit"])
+                    .field("acc_x", float(acc[0]))
+                    .field("acc_y", float(acc[1]))
+                    .field("acc_z", float(acc[2]))
+                    .field("gyro_x", float(gyro[0]))
+                    .field("gyro_y", float(gyro[1]))
+                    .field("gyro_z", float(gyro[2]))
+                    .time(datetime.fromisoformat(data_dict["timestamp"]))
+                )
+                write_to_influx(point)
 
         else: # Termómetro o barómetro
             # 5.
