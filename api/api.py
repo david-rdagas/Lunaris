@@ -1,18 +1,15 @@
+from fastapi import FastAPI, Header, HTTPException
 from typing import Optional
+import datetime
 import json
 import os
-import datetime
-from fastapi import FastAPI, Header, HTTPException
 from influxdb_client import InfluxDBClient
 
 
-
-# ── 1. Inicialización de FastAPI ──────────────────────────────────────────
 app = FastAPI(title="IoT Pipeline API", version="1.0")
-API_KEY = os.environ.get("API_KEY", "0000")
+VALID_API_KEY = os.environ.get("API_KEY", "0000")
 
-
-# ── 2. Conexión a base de datos ──────────────────────────────────────────
+# --- Conexión InfluxDB ---
 INFLUX_URL = os.environ.get("INFLUX_URL", "http://localhost:8086")
 INFLUX_TOKEN = os.environ.get("INFLUX_TOKEN", "pic-lab-token-2026")
 INFLUX_ORG = os.environ.get("INFLUX_ORG", "esei")
@@ -22,30 +19,11 @@ influx_client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_OR
 query_api = influx_client.query_api()
 
 
-# ── 3. Comprobación de credenciales ──────────────────────────────────────────
 def verify_api_key(x_api_key: Optional[str] = Header(None)):
     """Verifica que el header X-API-Key está presente y es correcto."""
-    if x_api_key is None or x_api_key != API_KEY:
+    if x_api_key is None or x_api_key != VALID_API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized: API key inválida o ausente")
 
-
-# ── 4. Endpoints ──────────────────────────────────────────
-"""
-Para nuestro sistema contamos con las siguientes posibles consultas: 
-
-"""
-
-def run_query(flux: str, empty_detail: str) -> list:
-    """Ejecuta una query Flux y lanza 404 si no hay resultados."""
-    try:
-        tables = query_api.query(flux, org=INFLUX_ORG)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error consultando InfluxDB: {e}")
-
-    records = [r for table in tables for r in table.records]
-    if not records:
-        raise HTTPException(status_code=404, detail=empty_detail)
-    return 
 
 def validate_range(from_ts: Optional[str], to_ts: Optional[str]) -> tuple[str, str]:
     """
@@ -75,9 +53,31 @@ def validate_range(from_ts: Optional[str], to_ts: Optional[str]) -> tuple[str, s
     return start, stop
 
 
-@app.get("/telemetry/temperature")
-def get_temperature(from_ts, to_ts, x_api_key):
+def run_query(flux: str, empty_detail: str) -> list:
+    """Ejecuta una query Flux y lanza 404 si no hay resultados."""
+    try:
+        tables = query_api.query(flux, org=INFLUX_ORG)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error consultando InfluxDB: {e}")
 
+    records = [r for table in tables for r in table.records]
+    if not records:
+        raise HTTPException(status_code=404, detail=empty_detail)
+    return records
+
+
+# ── Endpoint 1: Temperatura ───────────────────────────────────────────────────
+@app.get(
+    "/telemetry/temperature",
+    summary="Lecturas de temperatura",
+    description="Devuelve las lecturas del termómetro `s-termometer-01` en el rango indicado.",
+    tags=["Telemetría"]
+)
+def get_temperature(
+    from_ts,
+    to_ts,
+    x_api_key: Optional[str] = Header(None)
+):
     verify_api_key(x_api_key)
     start, stop = validate_range(from_ts, to_ts)
 
@@ -106,6 +106,9 @@ def get_temperature(from_ts, to_ts, x_api_key):
     }
 
 """
+# =============================================
+# GET /devices — lista de dispositivos
+# =============================================
 @app.get("/devices")
 def get_devices(x_api_key: Optional[str] = Header(None)):
     verify_api_key(x_api_key)
