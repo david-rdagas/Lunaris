@@ -4,3 +4,4 @@ __pycache__/
 .venv
 influxdb2_2.7.10-1_amd64.deb
 .env
+mosquitto/*
